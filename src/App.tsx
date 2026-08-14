@@ -114,6 +114,9 @@ export default function App() {
     spawnParticles(e.clientX, e.clientY, true)
     setPressed(true)
     setTimeout(() => setPressed(false), 150)
+    
+    // Redirect to pickleball app
+    window.location.href = 'https://pickleball.gqz.app'
   }, [spawnParticles])
 
   return (
@@ -139,7 +142,7 @@ export default function App() {
 
       <div className="relative flex flex-col items-center gap-6" style={{ zIndex: 20 }}>
         <p className="text-[#4b5068] text-sm tracking-widest uppercase select-none font-mono">
-          hover · click · hold
+          gqz's apps
         </p>
 
         <button
@@ -183,12 +186,12 @@ export default function App() {
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-90">
               <path d="M8 1.5L9.8 6.2H14.5L10.8 9.1L12.3 14L8 11.1L3.7 14L5.2 9.1L1.5 6.2H6.2L8 1.5Z" fill="currentColor"/>
             </svg>
-            Generate Particles
+            pickleball
           </span>
         </button>
 
         <p className="text-[#2d3148] text-xs tracking-wide select-none">
-          {particlesRef.current.length} active particles
+          {particlesRef.current.length} particles
         </p>
       </div>
     </div>
