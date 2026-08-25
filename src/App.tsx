@@ -64,8 +64,12 @@ export default function App() {
       />
 
       {/* Particles */}
-      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
-
+      <canvas 
+        ref={canvasRef} 
+        className="absolute inset-0" 
+        style={{ zIndex: 10 }} 
+      />
+      
       {/* Content */}
       <div className="relative flex flex-col items-center gap-6 px-6" style={{ zIndex: 20 }}>
         <p className="text-sm tracking-widest select-none font-mono" style={{ color: textColor }}>
