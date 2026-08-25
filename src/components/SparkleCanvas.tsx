@@ -111,8 +111,7 @@ export default function SparkleCanvas({
         particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
         if (particlesRef.current.length === 0) {
-        animFrameRef.current = requestAnimationFrame(loop)
-        setParticleCount(0)  // ← ADD THIS
+        animFrameRef.current = null  // Stop the loop
         return
         }
 
