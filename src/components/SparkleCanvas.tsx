@@ -20,10 +20,6 @@ interface SparkleCanvasProps {
   spawnInterval?: number
 }
 
-const isMobile = typeof window !== 'undefined' && 'ontouchstart' in window && navigator.maxTouchPoints > 0
-const targetFPS = isMobile ? 30 : 60
-const frameInterval = 1000 / targetFPS
-
 export default function SparkleCanvas({
   theme = 'dark',
   burstCount = 35,
@@ -44,7 +40,6 @@ export default function SparkleCanvas({
   const COUNT_UPDATE_INTERVAL = 100
 
   let nextId = 0
-  let lastFrameTime = 0
 
   const spawnParticles = useCallback((x: number, y: number, burst = false) => {
     const count = burst ? burstCount : sprayCount
@@ -110,14 +105,7 @@ export default function SparkleCanvas({
     resize()
     window.addEventListener('resize', resize)
 
-    const loop = (timestamp: number) => {
-      // Throttle frame rate on mobile
-      if (timestamp - lastFrameTime < frameInterval) {
-        animFrameRef.current = requestAnimationFrame(loop)
-        return
-      }
-      lastFrameTime = timestamp
-
+    const loop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
@@ -145,8 +133,7 @@ export default function SparkleCanvas({
       }
 
       const now = performance.now()
-      // Only update count when NOT dragging — React re-renders block touch
-      if (!holdingRef.current && now - lastCountUpdateRef.current >= COUNT_UPDATE_INTERVAL) {
+      if (now - lastCountUpdateRef.current >= COUNT_UPDATE_INTERVAL) {
         lastCountUpdateRef.current = now
         setParticleCount(particlesRef.current.length)
       }
@@ -182,9 +169,6 @@ export default function SparkleCanvas({
       lastSpawnRef.current = performance.now()
       spawnParticles(x, y, false)
       if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
-      if (canvasRef.current) {
-        try { canvasRef.current.setPointerCapture(1) } catch {}
-      }
     }
   }, [spawnParticles, rafSpawnLoop])
 
@@ -193,9 +177,6 @@ export default function SparkleCanvas({
     if (rafRef.current != null) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
-    }
-    if (canvasRef.current) {
-      try { canvasRef.current.releasePointerCapture(1) } catch {}
     }
   }, [])
 
