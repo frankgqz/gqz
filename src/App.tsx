@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
+import Card from './components/Card'
+import ThemeToggle from './components/ThemeToggle'
 
 interface Particle {
   id: number
@@ -7,7 +9,7 @@ interface Particle {
   vx: number
   vy: number
   life: number
-  maxLife: numbera
+  maxLife: number
   size: number
   hue: number
   saturation: number
@@ -16,21 +18,28 @@ interface Particle {
 let nextId = 0
 
 export default function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
-  const animFrameRef = useRef<number>(0)
-  const isHoveringRef = useRef(false)
-  const cursorRef = useRef({ x: 0, y: 0 })
-  const buttonRef = useRef<HTMLButtonElement>(null)
+  const animFrameRef = useRef<number | null>(null)
+  // cursor and hold state
+  const cursorRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+  const holdingRef = useRef(false)
+  const rafRef = useRef<number | null>(null)
+  const lastSpawnRef = useRef<number>(0)
+  // small UI state (pressed effect)
   const [pressed, setPressed] = useState(false)
 
+  // PARTICLE COUNT state (updates periodically)
+  const [particleCount, setParticleCount] = useState(0)
+  const lastCountUpdateRef = useRef<number>(0)
+  const COUNT_UPDATE_INTERVAL = 100 // ms
+
+  // spawn particles
   const spawnParticles = useCallback((x: number, y: number, burst = false) => {
-    const count = burst ? 18 : 2
+    const count = burst ? 18 : 3
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2
-      const speed = burst
-        ? 1.5 + Math.random() * 4
-        : 0.4 + Math.random() * 1.2
+      const speed = burst ? 1.5 + Math.random() * 4 : 0.4 + Math.random() * 1.2
       particlesRef.current.push({
         id: nextId++,
         x,
@@ -46,6 +55,7 @@ export default function App() {
     }
   }, [])
 
+  // canvas loop
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -53,75 +63,141 @@ export default function App() {
     if (!ctx) return
 
     const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = Math.max(1, Math.floor(window.innerWidth * dpr))
+      canvas.height = Math.max(1, Math.floor(window.innerHeight * dpr))
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
+
     resize()
     window.addEventListener('resize', resize)
 
     const loop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      if (isHoveringRef.current) {
-        spawnParticles(cursorRef.current.x, cursorRef.current.y)
-      }
-
-      particlesRef.current = particlesRef.current.filter(p => p.life > 0)
-
+      particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
       for (const p of particlesRef.current) {
         p.life -= p.maxLife
         p.x += p.vx
         p.y += p.vy
         p.vy -= 0.04
         p.vx *= 0.97
-
         const alpha = Math.max(0, p.life) ** 0.5
         const radius = p.size * (0.5 + p.life * 0.5)
-
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius)
         grad.addColorStop(0, `hsla(${p.hue}, ${p.saturation}%, 75%, ${alpha})`)
         grad.addColorStop(1, `hsla(${p.hue}, ${p.saturation}%, 60%, 0)`)
-
         ctx.beginPath()
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2)
         ctx.fillStyle = grad
         ctx.fill()
       }
 
+      // update particle count state at a controlled interval
+      const now = performance.now()
+      if (now - lastCountUpdateRef.current >= COUNT_UPDATE_INTERVAL) {
+        lastCountUpdateRef.current = now
+        setParticleCount(particlesRef.current.length)
+      }
+
       animFrameRef.current = requestAnimationFrame(loop)
     }
 
-    loop()
+    animFrameRef.current = requestAnimationFrame(loop)
+
     return () => {
-      cancelAnimationFrame(animFrameRef.current)
+      if (animFrameRef.current != null) cancelAnimationFrame(animFrameRef.current)
       window.removeEventListener('resize', resize)
     }
   }, [spawnParticles])
 
-  const handlePointerMove = useCallback((e: React.PointerEvent) => {
-    cursorRef.current = { x: e.clientX, y: e.clientY }
-  }, [])
+  // SPAWN interval for continuous spray (ms)
+  const SPAWN_INTERVAL = 60
 
-  const handlePointerEnter = useCallback(() => {
-    isHoveringRef.current = true
-  }, [])
+  // rAF-driven spawn loop while holding
+  const rafSpawnLoop = (timestamp: number) => {
+    if (!holdingRef.current) {
+      rafRef.current = null
+      return
+    }
+    const last = lastSpawnRef.current || 0
+    if (timestamp - last >= SPAWN_INTERVAL) {
+      const { x, y } = cursorRef.current
+      spawnParticles(x, y, false)
+      lastSpawnRef.current = timestamp
+    }
+    rafRef.current = requestAnimationFrame(rafSpawnLoop)
+  }
 
-  const handlePointerLeave = useCallback(() => {
-    isHoveringRef.current = false
-  }, [])
+  // start hold
+  const startHold = (x: number, y: number) => {
+    cursorRef.current = { x, y }
+    if (!holdingRef.current) {
+      holdingRef.current = true
+      lastSpawnRef.current = performance.now()
+      spawnParticles(x, y, false)
+      if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
+    }
+  }
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    spawnParticles(e.clientX, e.clientY, true)
-    setPressed(true)
-    setTimeout(() => setPressed(false), 150)
-    
-    // Redirect to pickleball app
-    window.location.href = 'https://pickleball.gqz.app'
+  // stop hold
+  const stopHold = () => {
+    holdingRef.current = false
+    if (rafRef.current != null) {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
+    }
+  }
+
+  // pointer handlers attached to window
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
+      startHold(e.clientX, e.clientY)
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      cursorRef.current = { x: e.clientX, y: e.clientY }
+    }
+    const onPointerUp = () => stopHold()
+    const onPointerCancel = () => stopHold()
+
+    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerCancel)
+
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerCancel)
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    }
   }, [spawnParticles])
+
+  // card click: big burst then navigate
+  const handlePickleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault()
+      // center of button: calculate bounding rect center so burst looks centered
+      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+      spawnParticles(x, y, true)
+      setPressed(true)
+      setTimeout(() => setPressed(false), 150)
+      setTimeout(() => {
+        window.location.href = 'https://pickleball.gqz.app'
+      }, 160)
+    },
+    [spawnParticles]
+  )
 
   return (
     <div className="relative w-full min-h-screen flex items-center justify-center bg-[#0b0d14] overflow-hidden">
-      {/* Subtle radial glow behind button */}
+      {/* radial glow behind content */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
@@ -133,65 +209,17 @@ export default function App() {
           left: '50%',
         }}
       />
-
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 pointer-events-none"
-        style={{ zIndex: 10 }}
-      />
-
+      <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
       <div className="relative flex flex-col items-center gap-6" style={{ zIndex: 20 }}>
         <p className="text-[#4b5068] text-sm tracking-widest uppercase select-none font-mono">
           gqz's apps
         </p>
 
-        <button
-          ref={buttonRef}
-          onPointerMove={handlePointerMove}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-          onClick={handleClick}
-          onMouseDown={() => setPressed(true)}
-          onMouseUp={() => setPressed(false)}
-          className="group relative select-none outline-none"
-          style={{ WebkitTapHighlightColor: 'transparent' }}
-        >
-          {/* Outer glow ring */}
-          <span
-            className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-            style={{
-              background: 'transparent',
-              boxShadow: '0 0 0 1px rgba(99,102,241,0.35), 0 0 32px 8px rgba(99,102,241,0.18)',
-              borderRadius: 9999,
-            }}
-          />
-
-          {/* Button body */}
-          <span
-            className="relative flex items-center gap-3 px-10 py-5 rounded-full font-semibold text-base tracking-wide transition-all duration-150"
-            style={{
-              background: pressed
-                ? 'linear-gradient(135deg, #3730a3 0%, #6366f1 100%)'
-                : 'linear-gradient(135deg, #4f46e5 0%, #818cf8 100%)',
-              color: '#fff',
-              boxShadow: pressed
-                ? '0 2px 12px rgba(99,102,241,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
-                : '0 8px 32px rgba(99,102,241,0.4), 0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.12)',
-              transform: pressed ? 'scale(0.96)' : 'scale(1)',
-              letterSpacing: '0.08em',
-              fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: '0.95rem',
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-90">
-              <path d="M8 1.5L9.8 6.2H14.5L10.8 9.1L12.3 14L8 11.1L3.7 14L5.2 9.1L1.5 6.2H6.2L8 1.5Z" fill="currentColor"/>
-            </svg>
-            pickleball
-          </span>
-        </button>
+        {/* Use modular Card component here */}
+        <Card title="Pickleball" onClick={handlePickleClick} />
 
         <p className="text-[#2d3148] text-xs tracking-wide select-none">
-          {particlesRef.current.length} particles
+          {particleCount} particles
         </p>
       </div>
     </div>
