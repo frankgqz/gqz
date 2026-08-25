@@ -8,9 +8,6 @@ type CardProps = {
   isWood?: boolean
 }
 
-/**
- * Nicer pill-style button with theme support.
- */
 export default function Card({ title, subtitle, href, onClick, isWood = false }: CardProps) {
   const [pressed, setPressed] = useState(false)
 
@@ -19,8 +16,8 @@ export default function Card({ title, subtitle, href, onClick, isWood = false }:
     : 'linear-gradient(135deg, #6B5344 0%, #8B7355 100%)'
 
   const purpleBg = pressed
-    ? 'linear-gradient(135deg, #3730a3 0%, #6366f1 100%)'
-    : 'linear-gradient(135deg, #4f46e5 0%, #818cf8 100%)'
+    ? 'linear-gradient(135deg, #5B52CC 0%, #7C7FF2 100%)'
+    : 'linear-gradient(135deg, #4F46E5 0%, #818CF8 100%)'
 
   const bg = isWood ? woodBg : purpleBg
 
@@ -29,8 +26,8 @@ export default function Card({ title, subtitle, href, onClick, isWood = false }:
     : '0 8px 32px rgba(139,115,85,0.36), 0 2px 8px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.12)'
 
   const purpleShadow = pressed
-    ? '0 2px 12px rgba(99,102,241,0.3), inset 0 1px 0 rgba(255,255,255,0.08)'
-    : '0 8px 32px rgba(99,102,241,0.36), 0 2px 8px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.12)'
+    ? '0 2px 16px rgba(99,102,241,0.6), inset 0 1px 0 rgba(255,255,255,0.12)'
+    : '0 8px 40px rgba(99,102,241,0.5), 0 2px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15)'
 
   const shadow = isWood ? woodShadow : purpleShadow
 
