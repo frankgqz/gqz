@@ -160,6 +160,10 @@ export default function SparkleCanvas({
       lastSpawnRef.current = performance.now()
       spawnParticles(x, y, false)
       if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
+      // Capture pointer for reliable release on mobile
+      if (canvasRef.current) {
+        try { canvasRef.current.setPointerCapture(1) } catch {}
+      }
     }
   }, [spawnParticles, rafSpawnLoop])
 
@@ -168,6 +172,10 @@ export default function SparkleCanvas({
     if (rafRef.current != null) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
+    }
+    // Release pointer capture
+    if (canvasRef.current) {
+      try { canvasRef.current.releasePointerCapture(1) } catch {}
     }
   }, [])
 
@@ -183,15 +191,17 @@ export default function SparkleCanvas({
 
       startHold(e.clientX, e.clientY)
     }
+
     const onPointerMove = (e: PointerEvent) => {
       cursorRef.current = { x: e.clientX, y: e.clientY }
     }
+
     const onPointerUp = () => stopHold()
     const onPointerCancel = () => stopHold()
     const onPointerLeave = () => stopHold()
 
     window.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointermove', onPointerMove, { passive: true })
     window.addEventListener('pointerup', onPointerUp)
     window.addEventListener('pointercancel', onPointerCancel)
     window.addEventListener('pointerleave', onPointerLeave)
