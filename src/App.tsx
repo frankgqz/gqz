@@ -21,11 +21,16 @@ export default function App() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
   const animFrameRef = useRef<number | null>(null)
+
+  // theme state
+  const [isWood, setIsWood] = useState(true)
+
   // cursor and hold state
   const cursorRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
   const holdingRef = useRef(false)
   const rafRef = useRef<number | null>(null)
   const lastSpawnRef = useRef<number>(0)
+
   // small UI state (pressed effect)
   const [pressed, setPressed] = useState(false)
 
@@ -34,12 +39,49 @@ export default function App() {
   const lastCountUpdateRef = useRef<number>(0)
   const COUNT_UPDATE_INTERVAL = 100 // ms
 
+  // theme colors
+  const bgColor = isWood ? '#F5F0E8' : '#0b0d14'
+  const textColor = isWood ? '#5D4E3A' : '#4b5068'
+  const subtextColor = isWood ? '#8B7355' : '#2d3148'
+
   // spawn particles
   const spawnParticles = useCallback((x: number, y: number, burst = false) => {
-    const count = burst ? 18 : 3
+    const count = burst ? 35 : 8
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2
       const speed = burst ? 1.5 + Math.random() * 4 : 0.4 + Math.random() * 1.2
+      
+      let hue: number, saturation: number
+      
+      if (isWood) {
+        // Autumn mix: browns, oranges, maples, greens
+        const r = Math.random()
+        if (r < 0.25) {
+          // Brown: 15-35
+          hue = 15 + Math.random() * 20
+          saturation = 50 + Math.random() * 30
+        } else if (r < 0.5) {
+          // Orange: 25-45
+          hue = 25 + Math.random() * 20
+          saturation = 70 + Math.random() * 20
+        } else if (r < 0.7) {
+          // Maple/red-orange: 0-20 or 350-360
+          hue = Math.random() > 0.5 ? Math.random() * 20 : 350 + Math.random() * 10
+          saturation = 65 + Math.random() * 25
+        } else if (r < 0.85) {
+          // Yellow/gold: 45-70
+          hue = 45 + Math.random() * 25
+          saturation = 60 + Math.random() * 30
+        } else {
+          // Green: 80-140
+          hue = 80 + Math.random() * 60
+          saturation = 40 + Math.random() * 40
+        }
+      } else {
+        hue = burst ? 200 + Math.random() * 160 : 220 + Math.random() * 120
+        saturation = 70 + Math.random() * 30
+      }
+      
       particlesRef.current.push({
         id: nextId++,
         x,
@@ -47,13 +89,15 @@ export default function App() {
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - (burst ? 0 : 0.6),
         life: 1,
-        maxLife: burst ? 0.018 + Math.random() * 0.012 : 0.022 + Math.random() * 0.014,
-        size: burst ? 3 + Math.random() * 4 : 2 + Math.random() * 3,
-        hue: burst ? 200 + Math.random() * 160 : 220 + Math.random() * 120,
-        saturation: 70 + Math.random() * 30,
+        maxLife: burst ? 0.016 + Math.random() * 0.012 : 0.018 + Math.random() * 0.012,
+        size: burst ? 3 + Math.random() * 5 : 2.5 + Math.random() * 4,
+        hue,
+        saturation,
       })
     }
-  }, [])
+  }, [isWood])
+
+
 
   // canvas loop
   useEffect(() => {
@@ -70,7 +114,6 @@ export default function App() {
       canvas.style.height = `${window.innerHeight}px`
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
-
     resize()
     window.addEventListener('resize', resize)
 
@@ -84,6 +127,7 @@ export default function App() {
         p.y += p.vy
         p.vy -= 0.04
         p.vx *= 0.97
+
         const alpha = Math.max(0, p.life) ** 0.5
         const radius = p.size * (0.5 + p.life * 0.5)
         const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius)
@@ -104,7 +148,6 @@ export default function App() {
 
       animFrameRef.current = requestAnimationFrame(loop)
     }
-
     animFrameRef.current = requestAnimationFrame(loop)
 
     return () => {
@@ -181,7 +224,6 @@ export default function App() {
   const handlePickleClick = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault()
-      // center of button: calculate bounding rect center so burst looks centered
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
       const x = rect.left + rect.width / 2
       const y = rect.top + rect.height / 2
@@ -196,29 +238,38 @@ export default function App() {
   )
 
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center bg-[#0b0d14] overflow-hidden">
+    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" style={{ backgroundColor: bgColor }}>
+      {/* Theme toggle - top right */}
+      <div className="absolute top-6 right-6 z-30">
+        <ThemeToggle isWood={isWood} onToggle={() => setIsWood(!isWood)} />
+      </div>
+
       {/* radial glow behind content */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
           width: 480,
           height: 480,
-          background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
+          background: isWood 
+            ? 'radial-gradient(circle, rgba(139,115,85,0.15) 0%, transparent 70%)'
+            : 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
           transform: 'translate(-50%, -50%)',
           top: '50%',
           left: '50%',
         }}
       />
+
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
+
       <div className="relative flex flex-col items-center gap-6" style={{ zIndex: 20 }}>
-        <p className="text-[#4b5068] text-sm tracking-widest uppercase select-none font-mono">
-          gqz's apps
+        <p className="text-sm tracking-widest select-none font-mono" style={{ color: textColor }}>
+          apps
         </p>
 
         {/* Use modular Card component here */}
-        <Card title="Pickleball" onClick={handlePickleClick} />
+        <Card title="Pickleball" onClick={handlePickleClick} isWood={isWood} />
 
-        <p className="text-[#2d3148] text-xs tracking-wide select-none">
+        <p className="text-xs tracking-wide select-none" style={{ color: subtextColor }}>
           {particleCount} particles
         </p>
       </div>
