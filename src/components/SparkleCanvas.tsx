@@ -29,6 +29,7 @@ export default function SparkleCanvas({
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
   const animFrameRef = useRef<number | null>(null)
+  const loopRef = useRef<((timestamp: number) => void) | null>(null)
 
   const cursorRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
   const holdingRef = useRef(false)
@@ -87,6 +88,7 @@ export default function SparkleCanvas({
     }
   }, [theme, burstCount, sprayCount])
 
+  // Animation loop setup
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -105,7 +107,7 @@ export default function SparkleCanvas({
     resize()
     window.addEventListener('resize', resize)
 
-    const loop = () => {
+    const loop = (timestamp: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
@@ -139,6 +141,8 @@ export default function SparkleCanvas({
 
       animFrameRef.current = requestAnimationFrame(loop)
     }
+
+    loopRef.current = loop
     animFrameRef.current = requestAnimationFrame(loop)
 
     return () => {
@@ -147,6 +151,7 @@ export default function SparkleCanvas({
     }
   }, [])
 
+  // Spawn loop during hold
   const rafSpawnLoop = useCallback((timestamp: number) => {
     if (!holdingRef.current) {
       rafRef.current = null
@@ -176,6 +181,32 @@ export default function SparkleCanvas({
     if (rafRef.current != null) {
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
+    }
+
+    // Pause animation loop
+    if (animFrameRef.current != null) {
+      cancelAnimationFrame(animFrameRef.current)
+      animFrameRef.current = null
+    }
+
+    // Clear canvas immediately
+    const canvas = canvasRef.current
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
+    }
+
+    // Resume loop after browser idle time
+    const resumeLoop = () => {
+      if (loopRef.current && !animFrameRef.current) {
+        animFrameRef.current = requestAnimationFrame(loopRef.current)
+      }
+    }
+
+    if (typeof requestIdleCallback !== 'undefined') {
+      requestIdleCallback(resumeLoop, { timeout: 100 })
+    } else {
+      setTimeout(resumeLoop, 50)
     }
   }, [])
 
