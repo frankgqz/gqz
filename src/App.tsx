@@ -72,7 +72,7 @@ export default function App() {
         style={{ 
           zIndex: 20,
           position: 'absolute',
-          top: '30%',  // 20% higher than center (50% → 30%)
+          top: 'clamp(40%, 45%, 50%)',  // mobile 25%, tablet 35%, desktop 45%
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}
