@@ -171,35 +171,23 @@ export default function SparkleCanvas({
         rafRef.current = null
     }
 
+    // Let existing particles fade out naturally
+    // (don't clear them)
+
+    // Pause animation loop briefly for breathing room
     if (animFrameRef.current != null) {
         cancelAnimationFrame(animFrameRef.current)
         animFrameRef.current = null
-    }
-
-    // Clear particles immediately
-    particlesRef.current = []
-    setParticleCount(0)
-
-    // Clear canvas
-    const canvas = canvasRef.current
-    if (canvas) {
-        const ctx = canvas.getContext('2d')
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
-    }
-
-    // Resume loop after idle
-    const resumeLoop = () => {
+        
+        // Resume after a moment
+        setTimeout(() => {
         if (loopRef.current && !animFrameRef.current) {
-        animFrameRef.current = requestAnimationFrame(loopRef.current)
+            animFrameRef.current = requestAnimationFrame(loopRef.current)
         }
-    }
-
-    if (typeof requestIdleCallback !== 'undefined') {
-        requestIdleCallback(resumeLoop, { timeout: 100 })
-    } else {
-        setTimeout(resumeLoop, 50)
+        }, 30)
     }
     }, [])
+
 
   const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
     // Skip if touching a button
