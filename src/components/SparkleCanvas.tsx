@@ -108,6 +108,13 @@ export default function SparkleCanvas({
     const loop = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
+
+      // Skip render pass if no particles - helps mobile responsiveness
+      if (particlesRef.current.length === 0) {
+        animFrameRef.current = requestAnimationFrame(loop)
+        return
+      }
+
       for (const p of particlesRef.current) {
         p.life -= p.maxLife
         p.x += p.vx
@@ -160,7 +167,6 @@ export default function SparkleCanvas({
       lastSpawnRef.current = performance.now()
       spawnParticles(x, y, false)
       if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
-      // Capture pointer for reliable release on mobile
       if (canvasRef.current) {
         try { canvasRef.current.setPointerCapture(1) } catch {}
       }
@@ -173,7 +179,6 @@ export default function SparkleCanvas({
       cancelAnimationFrame(rafRef.current)
       rafRef.current = null
     }
-    // Release pointer capture
     if (canvasRef.current) {
       try { canvasRef.current.releasePointerCapture(1) } catch {}
     }
