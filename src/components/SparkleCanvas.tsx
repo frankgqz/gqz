@@ -20,6 +20,10 @@ interface SparkleCanvasProps {
   spawnInterval?: number
 }
 
+const isMobile = typeof window !== 'undefined' && 'ontouchstart' in window && navigator.maxTouchPoints > 0
+const targetFPS = isMobile ? 30 : 60
+const frameInterval = 1000 / targetFPS
+
 export default function SparkleCanvas({
   theme = 'dark',
   burstCount = 35,
@@ -40,6 +44,7 @@ export default function SparkleCanvas({
   const COUNT_UPDATE_INTERVAL = 100
 
   let nextId = 0
+  let lastFrameTime = 0
 
   const spawnParticles = useCallback((x: number, y: number, burst = false) => {
     const count = burst ? burstCount : sprayCount
@@ -105,11 +110,18 @@ export default function SparkleCanvas({
     resize()
     window.addEventListener('resize', resize)
 
-    const loop = () => {
+    const loop = (timestamp: number) => {
+      // Throttle frame rate on mobile
+      if (timestamp - lastFrameTime < frameInterval) {
+        animFrameRef.current = requestAnimationFrame(loop)
+        return
+      }
+      lastFrameTime = timestamp
+
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
-      // Skip render pass if no particles - helps mobile responsiveness
+      // Skip render pass if no particles
       if (particlesRef.current.length === 0) {
         animFrameRef.current = requestAnimationFrame(loop)
         return
@@ -131,11 +143,14 @@ export default function SparkleCanvas({
         ctx.fillStyle = grad
         ctx.fill()
       }
+
       const now = performance.now()
-      if (now - lastCountUpdateRef.current >= COUNT_UPDATE_INTERVAL) {
+      // Only update count when NOT dragging — React re-renders block touch
+      if (!holdingRef.current && now - lastCountUpdateRef.current >= COUNT_UPDATE_INTERVAL) {
         lastCountUpdateRef.current = now
         setParticleCount(particlesRef.current.length)
       }
+
       animFrameRef.current = requestAnimationFrame(loop)
     }
     animFrameRef.current = requestAnimationFrame(loop)
