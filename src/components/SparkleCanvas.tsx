@@ -18,7 +18,6 @@ interface SparkleCanvasProps {
   burstCount?: number
   sprayCount?: number
   spawnInterval?: number
-  className?: string
 }
 
 export default function SparkleCanvas({
@@ -26,7 +25,6 @@ export default function SparkleCanvas({
   burstCount = 35,
   sprayCount = 8,
   spawnInterval = 60,
-  className = '',
 }: SparkleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
@@ -101,6 +99,7 @@ export default function SparkleCanvas({
       canvas.height = Math.max(1, Math.floor(window.innerHeight * dpr))
       canvas.style.width = `${window.innerWidth}px`
       canvas.style.height = `${window.innerHeight}px`
+      canvas.style.touchAction = 'none'
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
     resize()
@@ -172,40 +171,40 @@ export default function SparkleCanvas({
     }
   }, [])
 
-    useEffect(() => {
-        const onPointerDown = (e: PointerEvent) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return
-        
-        const target = e.target as HTMLElement
-        if (target.closest('button, a, [data-interactive]')) {
-            stopHold()
-            return
-        }
-        
-        startHold(e.clientX, e.clientY)
-        }
-        const onPointerMove = (e: PointerEvent) => {
-        cursorRef.current = { x: e.clientX, y: e.clientY }
-        }
-        const onPointerUp = () => stopHold()
-        const onPointerCancel = () => stopHold()
-        const onPointerLeave = () => stopHold()  // added
+  useEffect(() => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse' && e.button !== 0) return
 
-        window.addEventListener('pointerdown', onPointerDown)
-        window.addEventListener('pointermove', onPointerMove)
-        window.addEventListener('pointerup', onPointerUp)
-        window.addEventListener('pointercancel', onPointerCancel)
-        window.addEventListener('pointerleave', onPointerLeave)  // added
+      const target = e.target as HTMLElement
+      if (target.closest('button, a, [data-interactive]')) {
+        stopHold()
+        return
+      }
 
-        return () => {
-        window.removeEventListener('pointerdown', onPointerDown)
-        window.removeEventListener('pointermove', onPointerMove)
-        window.removeEventListener('pointerup', onPointerUp)
-        window.removeEventListener('pointercancel', onPointerCancel)
-        window.removeEventListener('pointerleave', onPointerLeave)  // added
-        if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
-        }
-    }, [startHold, stopHold])
+      startHold(e.clientX, e.clientY)
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      cursorRef.current = { x: e.clientX, y: e.clientY }
+    }
+    const onPointerUp = () => stopHold()
+    const onPointerCancel = () => stopHold()
+    const onPointerLeave = () => stopHold()
+
+    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('pointermove', onPointerMove)
+    window.addEventListener('pointerup', onPointerUp)
+    window.addEventListener('pointercancel', onPointerCancel)
+    window.addEventListener('pointerleave', onPointerLeave)
+
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointercancel', onPointerCancel)
+      window.removeEventListener('pointerleave', onPointerLeave)
+      if (rafRef.current != null) cancelAnimationFrame(rafRef.current)
+    }
+  }, [startHold, stopHold])
 
   return { canvasRef, particleCount, burst: (x: number, y: number) => spawnParticles(x, y, true) }
 }
