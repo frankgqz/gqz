@@ -268,7 +268,7 @@ export default function App() {
           height: 'min(480px, 100vw)',
           background: isWood 
             ? 'radial-gradient(circle, rgba(139,115,85,0.15) 0%, transparent 70%)'
-            : 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
+            : 'radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)',
           transform: 'translate(-50%, -50%)',
           top: '50%',
           left: '50%',
