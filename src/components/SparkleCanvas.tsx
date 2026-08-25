@@ -24,7 +24,7 @@ export default function SparkleCanvas({
   theme = 'dark',
   burstCount = 35,
   sprayCount = 8,
-  spawnInterval = 10,
+  spawnInterval = 20,
 }: SparkleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
