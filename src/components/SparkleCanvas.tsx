@@ -24,7 +24,7 @@ export default function SparkleCanvas({
   theme = 'dark',
   burstCount = 35,
   sprayCount = 8,
-  spawnInterval = 15,  // was 60, now 25 for smoother trail
+  spawnInterval = 20,
 }: SparkleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
@@ -164,16 +164,6 @@ export default function SparkleCanvas({
     rafRef.current = requestAnimationFrame(rafSpawnLoop)
   }, [spawnInterval, spawnParticles])
 
-  const startHold = useCallback((x: number, y: number) => {
-    cursorRef.current = { x, y }
-    if (!holdingRef.current) {
-      holdingRef.current = true
-      lastSpawnRef.current = performance.now()
-      spawnParticles(x, y, false)
-      if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
-    }
-  }, [spawnParticles, rafSpawnLoop])
-
   const stopHold = useCallback(() => {
     holdingRef.current = false
     if (rafRef.current != null) {
@@ -205,17 +195,25 @@ export default function SparkleCanvas({
     }
   }, [])
 
+  const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
+    // Skip if touching a button
+    if (target?.closest('button, a, [data-interactive]')) {
+      return
+    }
+
+    cursorRef.current = { x, y }
+    if (!holdingRef.current) {
+      holdingRef.current = true
+      lastSpawnRef.current = performance.now()
+      spawnParticles(x, y, false)
+      if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
+    }
+  }, [spawnParticles, rafSpawnLoop])
+
   useEffect(() => {
     const onPointerDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return
-
-      const target = e.target as HTMLElement
-      if (target.closest('button, a, [data-interactive]')) {
-        stopHold()
-        return
-      }
-
-      startHold(e.clientX, e.clientY)
+      startHold(e.clientX, e.clientY, e.target as HTMLElement)
     }
 
     const onPointerMove = (e: PointerEvent) => {
