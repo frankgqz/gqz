@@ -181,20 +181,24 @@ export default function SparkleCanvas({
     // and will filter dead particles until count hits 0
     }, [])
 
-  const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
-    // Skip if touching a button
+    const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
     if (target?.closest('button, a, [data-interactive]')) {
-      return
+        return
     }
-
     cursorRef.current = { x, y }
     if (!holdingRef.current) {
-      holdingRef.current = true
-      lastSpawnRef.current = performance.now()
-      spawnParticles(x, y, false)
-      if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
+        holdingRef.current = true
+        lastSpawnRef.current = performance.now()
+        spawnParticles(x, y, false)
+        
+        // Resume animation loop if it was stopped
+        if (!animFrameRef.current && loopRef.current) {
+        animFrameRef.current = requestAnimationFrame(loopRef.current)
+        }
+        
+        if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
     }
-  }, [spawnParticles, rafSpawnLoop])
+    }, [spawnParticles, rafSpawnLoop])
 
   useEffect(() => {
     const onPointerDown = (e: PointerEvent) => {
