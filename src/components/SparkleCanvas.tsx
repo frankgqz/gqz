@@ -24,7 +24,7 @@ export default function SparkleCanvas({
   theme = 'dark',
   burstCount = 35,
   sprayCount = 8,
-  spawnInterval = 60,
+  spawnInterval = 25,  // was 60, now 25 for smoother trail
 }: SparkleCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const particlesRef = useRef<Particle[]>([])
@@ -88,7 +88,6 @@ export default function SparkleCanvas({
     }
   }, [theme, burstCount, sprayCount])
 
-  // Animation loop setup
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -151,7 +150,6 @@ export default function SparkleCanvas({
     }
   }, [])
 
-  // Spawn loop during hold
   const rafSpawnLoop = useCallback((timestamp: number) => {
     if (!holdingRef.current) {
       rafRef.current = null
@@ -183,20 +181,17 @@ export default function SparkleCanvas({
       rafRef.current = null
     }
 
-    // Pause animation loop
     if (animFrameRef.current != null) {
       cancelAnimationFrame(animFrameRef.current)
       animFrameRef.current = null
     }
 
-    // Clear canvas immediately
     const canvas = canvasRef.current
     if (canvas) {
       const ctx = canvas.getContext('2d')
       if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
     }
 
-    // Resume loop after browser idle time
     const resumeLoop = () => {
       if (loopRef.current && !animFrameRef.current) {
         animFrameRef.current = requestAnimationFrame(loopRef.current)
