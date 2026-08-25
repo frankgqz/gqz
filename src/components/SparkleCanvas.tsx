@@ -79,8 +79,8 @@ export default function SparkleCanvas({
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - (burst ? 0 : 0.6),
         life: 1,
-        maxLife: burst ? 0.016 + Math.random() * 0.012 : 0.018 + Math.random() * 0.012,
-        size: burst ? 3 + Math.random() * 5 : 2.5 + Math.random() * 4,
+        maxLife: burst ? 0.016 + Math.random() * 0.012 : 0.018 + Math.random() * 0.014,
+        size: burst ? 3 + Math.random() * 5 : 2 + Math.random() * 3,
         hue,
         saturation,
       })
@@ -109,7 +109,6 @@ export default function SparkleCanvas({
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
-      // Skip render pass if no particles
       if (particlesRef.current.length === 0) {
         animFrameRef.current = requestAnimationFrame(loop)
         return
