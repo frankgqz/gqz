@@ -107,13 +107,14 @@ export default function SparkleCanvas({
     window.addEventListener('resize', resize)
 
     const loop = (timestamp: number) => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
-      if (particlesRef.current.length === 0) {
+        if (particlesRef.current.length === 0) {
         animFrameRef.current = requestAnimationFrame(loop)
+        setParticleCount(0)  // ← ADD THIS
         return
-      }
+        }
 
       for (const p of particlesRef.current) {
         p.life -= p.maxLife
