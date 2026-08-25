@@ -174,8 +174,13 @@ export default function SparkleCanvas({
 
   useEffect(() => {
     const onPointerDown = (e: PointerEvent) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return
-      startHold(e.clientX, e.clientY)
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    
+    // Skip if touching a button, a, or [data-interactive]
+    const target = e.target as HTMLElement
+    if (target.closest('button, a, [data-interactive]')) return
+    
+    startHold(e.clientX, e.clientY)
     }
     const onPointerMove = (e: PointerEvent) => {
       cursorRef.current = { x: e.clientX, y: e.clientY }
