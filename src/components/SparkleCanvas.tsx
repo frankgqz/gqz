@@ -167,23 +167,19 @@ export default function SparkleCanvas({
     const stopHold = useCallback(() => {
     holdingRef.current = false
     
-    // Stop spawning new particles
+    // Stop spawning
     if (rafRef.current != null) {
         cancelAnimationFrame(rafRef.current)
         rafRef.current = null
     }
 
-    // Clear canvas for smooth feel
-    const canvas = canvasRef.current
-    if (canvas) {
-        const ctx = canvas.getContext('2d')
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
-    }
-
-    // Animation loop keeps running (via skip-empty optimization)
-    // It will filter dead particles and update count to 0 naturally
+    // DON'T clear canvas
+    // DON'T pause animation loop
+    
+    // Just let existing particles fade out naturally
+    // The animation loop (with skip-empty optimization) keeps running
+    // and will filter dead particles until count hits 0
     }, [])
-
 
   const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
     // Skip if touching a button
