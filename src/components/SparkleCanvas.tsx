@@ -231,5 +231,15 @@ export default function SparkleCanvas({
     }
   }, [startHold, stopHold])
 
-  return { canvasRef, particleCount, burst: (x: number, y: number) => spawnParticles(x, y, true) }
+    return { 
+    canvasRef, 
+    particleCount, 
+    burst: (x: number, y: number) => {
+        spawnParticles(x, y, true)
+        // Resume animation loop if it was stopped
+        if (!animFrameRef.current && loopRef.current) {
+        animFrameRef.current = requestAnimationFrame(loopRef.current)
+        }
+    }
+    }
 }
