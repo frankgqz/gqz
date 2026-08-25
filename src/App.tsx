@@ -72,7 +72,7 @@ export default function App() {
         style={{ 
           zIndex: 20,
           position: 'absolute',
-          top: 'clamp(35%, 40%, 45%)',  // clamp(min, preferred, max)
+          top: 'clamp(40%, 42.5%, 45%)',  // clamp(min, preferred, max)
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}
