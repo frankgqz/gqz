@@ -242,6 +242,7 @@ export default function App() {
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" 
       style={{ 
         backgroundColor: bgColor,
+        touchAction: 'none',
         paddingTop: 'env(safe-area-inset-top)',
         paddingRight: 'env(safe-area-inset-right)',
         paddingBottom: 'env(safe-area-inset-bottom)',
