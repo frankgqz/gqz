@@ -164,36 +164,42 @@ export default function SparkleCanvas({
     rafRef.current = requestAnimationFrame(rafSpawnLoop)
   }, [spawnInterval, spawnParticles])
 
-  const stopHold = useCallback(() => {
+    const stopHold = useCallback(() => {
     holdingRef.current = false
     if (rafRef.current != null) {
-      cancelAnimationFrame(rafRef.current)
-      rafRef.current = null
+        cancelAnimationFrame(rafRef.current)
+        rafRef.current = null
     }
 
     if (animFrameRef.current != null) {
-      cancelAnimationFrame(animFrameRef.current)
-      animFrameRef.current = null
+        cancelAnimationFrame(animFrameRef.current)
+        animFrameRef.current = null
     }
 
+    // Clear particles immediately
+    particlesRef.current = []
+    setParticleCount(0)
+
+    // Clear canvas
     const canvas = canvasRef.current
     if (canvas) {
-      const ctx = canvas.getContext('2d')
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
+        const ctx = canvas.getContext('2d')
+        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
     }
 
+    // Resume loop after idle
     const resumeLoop = () => {
-      if (loopRef.current && !animFrameRef.current) {
+        if (loopRef.current && !animFrameRef.current) {
         animFrameRef.current = requestAnimationFrame(loopRef.current)
-      }
+        }
     }
 
     if (typeof requestIdleCallback !== 'undefined') {
-      requestIdleCallback(resumeLoop, { timeout: 100 })
+        requestIdleCallback(resumeLoop, { timeout: 100 })
     } else {
-      setTimeout(resumeLoop, 50)
+        setTimeout(resumeLoop, 50)
     }
-  }, [])
+    }, [])
 
   const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
     // Skip if touching a button
