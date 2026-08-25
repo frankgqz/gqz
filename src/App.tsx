@@ -238,18 +238,33 @@ export default function App() {
   )
 
   return (
-    <div className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" style={{ backgroundColor: bgColor }}>
+    <div 
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" 
+      style={{ 
+        backgroundColor: bgColor,
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingRight: 'env(safe-area-inset-right)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+      }}
+    >
       {/* Theme toggle - top right */}
-      <div className="absolute top-6 right-6 z-30">
+      <div 
+        className="absolute z-30"
+        style={{ 
+          top: 'max(24px, calc(env(safe-area-inset-top) + 24px))',
+          right: 'max(24px, calc(env(safe-area-inset-right) + 24px))'
+        }}
+      >
         <ThemeToggle isWood={isWood} onToggle={() => setIsWood(!isWood)} />
       </div>
 
-      {/* radial glow behind content */}
+      {/* radial glow - responsive size */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: 480,
-          height: 480,
+          width: 'min(480px, 100vw)',
+          height: 'min(480px, 100vw)',
           background: isWood 
             ? 'radial-gradient(circle, rgba(139,115,85,0.15) 0%, transparent 70%)'
             : 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
@@ -261,12 +276,11 @@ export default function App() {
 
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
 
-      <div className="relative flex flex-col items-center gap-6" style={{ zIndex: 20 }}>
+      <div className="relative flex flex-col items-center gap-6 px-6" style={{ zIndex: 20 }}>
         <p className="text-sm tracking-widest select-none font-mono" style={{ color: textColor }}>
           apps
         </p>
 
-        {/* Use modular Card component here */}
         <Card title="Pickleball" onClick={handlePickleClick} isWood={isWood} />
 
         <p className="text-xs tracking-wide select-none" style={{ color: subtextColor }}>
@@ -275,4 +289,5 @@ export default function App() {
       </div>
     </div>
   )
+
 }
