@@ -78,7 +78,7 @@ export default function App() {
         }}
       >
         <p className="text-sm tracking-widest select-none font-mono" style={{ color: textColor }}>
-          apps
+          test
         </p>
 
         <Card title="Pickleball" onClick={handlePickleClick} isWood={isWood} />
