@@ -2,41 +2,11 @@ import React, { useState, useCallback } from 'react'
 import Card from './components/Card'
 import ThemeToggle from './components/ThemeToggle'
 import SparkleCanvas from './components/SparkleCanvas'
-
-type Theme = 'wood' | 'dark' | 'sky' | 'matcha'
-
-const themeOrder: Theme[] = ['wood', 'dark', 'sky', 'matcha']
-
-const themeGlows = {
-  wood: 'radial-gradient(circle, rgba(139,115,85,0.15) 0%, transparent 70%)',
-  dark: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
-  sky: 'radial-gradient(circle, rgba(180,190,220,0.12) 0%, transparent 70%)',
-  matcha: 'radial-gradient(circle, rgba(122,139,117,0.12) 0%, transparent 70%)',
-}
-
-const themeBg = {
-  wood: '#F5F0E8',
-  dark: '#0D0E14',
-  sky: '#FAFBFD',
-  matcha: '#EBE8E0',
-}
-
-const themeText = {
-  wood: '#5D4E3A',
-  dark: '#4b5068',
-  sky: '#5D7090',
-  matcha: '#5D6855',
-}
-
-const themeSubtext = {
-  wood: '#8B7355',
-  dark: '#2d3148',
-  sky: '#8090A8',
-  matcha: '#7A8B75',
-}
+import { themes, themeOrder, Theme } from './theme'
 
 export default function App() {
   const [currentTheme, setCurrentTheme] = useState<Theme>('wood')
+  const theme = themes[currentTheme]
 
   const { canvasRef, particleCount, burst } = SparkleCanvas({
     theme: currentTheme
@@ -63,14 +33,13 @@ export default function App() {
     <div 
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" 
       style={{ 
-        backgroundColor: themeBg[currentTheme],
+        backgroundColor: theme.bg,
         paddingTop: 'env(safe-area-inset-top)',
         paddingRight: 'env(safe-area-inset-right)',
         paddingBottom: 'env(safe-area-inset-bottom)',
         paddingLeft: 'env(safe-area-inset-left)',
       }}
     >
-      {/* Theme toggle - top right */}
       <div 
         className="absolute z-30"
         style={{ 
@@ -81,23 +50,20 @@ export default function App() {
         <ThemeToggle currentTheme={currentTheme} onToggle={cycleTheme} />
       </div>
 
-      {/* radial glow */}
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
           width: 'min(480px, 100vw)',
           height: 'min(480px, 100vw)',
-          background: themeGlows[currentTheme],
+          background: theme.glow,
           transform: 'translate(-50%, -50%)',
           top: '50%',
           left: '50%',
         }}
       />
 
-      {/* Particles */}
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
 
-      {/* Content - positioned higher */}
       <div 
         className="relative flex flex-col items-center gap-6 px-6"
         style={{ 
@@ -108,13 +74,13 @@ export default function App() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <p className="text-sm tracking-widest select-none font-mono" style={{ color: themeText[currentTheme] }}>
+        <p className="text-sm tracking-widest select-none font-mono" style={{ color: theme.text }}>
           apps
         </p>
 
         <Card title="Pickleball" onClick={handlePickleClick} theme={currentTheme} />
 
-        <p className="text-xs tracking-wide select-none" style={{ color: themeSubtext[currentTheme] }}>
+        <p className="text-xs tracking-wide select-none" style={{ color: theme.subtext }}>
           {particleCount} particles
         </p>
       </div>

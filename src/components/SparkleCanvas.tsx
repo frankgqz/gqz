@@ -1,4 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
+import { themes, Theme } from '../theme'
+
 
 interface Particle {
   id: number
@@ -13,8 +15,6 @@ interface Particle {
   saturation: number
 }
 
-
-type Theme = 'wood' | 'dark' | 'sky' | 'matcha'
 
 interface SparkleCanvasProps {
   theme?: Theme
@@ -52,69 +52,13 @@ export default function SparkleCanvas({
     for (let i = 0; i < count; i++) {
       const angle = random() * Math.PI * 2
       const speed = burst ? 1.5 + random() * 4 : 0.4 + random() * 1.2
-      const r = random()
 
       let hue: number, saturation: number
 
-      switch (theme) {
-        case 'wood':
-          // Browns, oranges, maples, yellows, greens
-          if (r < 0.25) {
-            hue = 15 + random() * 20
-            saturation = 50 + random() * 30
-          } else if (r < 0.5) {
-            hue = 25 + random() * 20
-            saturation = 70 + random() * 20
-          } else if (r < 0.7) {
-            hue = random() > 0.5 ? random() * 20 : 350 + random() * 10
-            saturation = 65 + random() * 25
-          } else if (r < 0.85) {
-            hue = 45 + random() * 25
-            saturation = 60 + random() * 30
-          } else {
-            hue = 80 + random() * 60
-            saturation = 40 + random() * 40
-          }
-          break
-
-        case 'dark':
-          // Purple, indigo, violet, blue
-          hue = burst ? 200 + random() * 160 : 220 + random() * 120
-          saturation = 70 + random() * 30
-          break
-
-        case 'sky':
-          // Pale blue, lavender, periwinkle
-          if (r < 0.4) {
-            hue = 200 + random() * 30
-            saturation = 30 + random() * 30
-          } else if (r < 0.7) {
-            hue = 230 + random() * 40
-            saturation = 25 + random() * 30
-          } else {
-            hue = 250 + random() * 30
-            saturation = 30 + random() * 30
-          }
-          break
-
-        case 'matcha':
-          // Warm tan, moss, seafoam
-          if (r < 0.35) {
-            hue = 20 + random() * 25
-            saturation = 30 + random() * 30
-          } else if (r < 0.65) {
-            hue = 90 + random() * 40
-            saturation = 30 + random() * 30
-          } else {
-            hue = 140 + random() * 40
-            saturation = 25 + random() * 30
-          }
-          break
-
-        default:
-          hue = 200 + random() * 160
-          saturation = 70 + random() * 30
-      }
+						const colors = themes[theme].particleHues
+						const color = colors[Math.floor(Math.random() * colors.length)]
+						hue = color.hue[0] + Math.random() * (color.hue[1] - color.hue[0])
+						saturation = color.sat[0] + Math.random() * (color.sat[1] - color.sat[0])
 
       particlesRef.current.push({
         id: nextId++,
