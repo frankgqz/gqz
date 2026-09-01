@@ -13,8 +13,10 @@ interface Particle {
   saturation: number
 }
 
+type Theme = 'wood' | 'dark' | 'sky' | 'matcha'
+
 interface SparkleCanvasProps {
-  theme?: 'wood' | 'dark'
+  theme?: Theme
   burstCount?: number
   sprayCount?: number
   spawnInterval?: number
@@ -42,35 +44,75 @@ export default function SparkleCanvas({
 
   let nextId = 0
 
+  const random = () => Math.random()
+
   const spawnParticles = useCallback((x: number, y: number, burst = false) => {
     const count = burst ? burstCount : sprayCount
     for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2
-      const speed = burst ? 1.5 + Math.random() * 4 : 0.4 + Math.random() * 1.2
+      const angle = random() * Math.PI * 2
+      const speed = burst ? 1.5 + random() * 4 : 0.4 + random() * 1.2
+      const r = random()
 
       let hue: number, saturation: number
 
-      if (theme === 'wood') {
-        const r = Math.random()
-        if (r < 0.25) {
-          hue = 15 + Math.random() * 20
-          saturation = 50 + Math.random() * 30
-        } else if (r < 0.5) {
-          hue = 25 + Math.random() * 20
-          saturation = 70 + Math.random() * 20
-        } else if (r < 0.7) {
-          hue = Math.random() > 0.5 ? Math.random() * 20 : 350 + Math.random() * 10
-          saturation = 65 + Math.random() * 25
-        } else if (r < 0.85) {
-          hue = 45 + Math.random() * 25
-          saturation = 60 + Math.random() * 30
-        } else {
-          hue = 80 + Math.random() * 60
-          saturation = 40 + Math.random() * 40
-        }
-      } else {
-        hue = burst ? 200 + Math.random() * 160 : 220 + Math.random() * 120
-        saturation = 70 + Math.random() * 30
+      switch (theme) {
+        case 'wood':
+          // Browns, oranges, maples, yellows, greens
+          if (r < 0.25) {
+            hue = 15 + random() * 20
+            saturation = 50 + random() * 30
+          } else if (r < 0.5) {
+            hue = 25 + random() * 20
+            saturation = 70 + random() * 20
+          } else if (r < 0.7) {
+            hue = random() > 0.5 ? random() * 20 : 350 + random() * 10
+            saturation = 65 + random() * 25
+          } else if (r < 0.85) {
+            hue = 45 + random() * 25
+            saturation = 60 + random() * 30
+          } else {
+            hue = 80 + random() * 60
+            saturation = 40 + random() * 40
+          }
+          break
+
+        case 'dark':
+          // Purple, indigo, violet, blue
+          hue = burst ? 200 + random() * 160 : 220 + random() * 120
+          saturation = 70 + random() * 30
+          break
+
+        case 'sky':
+          // Pale blue, lavender, periwinkle
+          if (r < 0.4) {
+            hue = 200 + random() * 30
+            saturation = 30 + random() * 30
+          } else if (r < 0.7) {
+            hue = 230 + random() * 40
+            saturation = 25 + random() * 30
+          } else {
+            hue = 250 + random() * 30
+            saturation = 30 + random() * 30
+          }
+          break
+
+        case 'matcha':
+          // Warm tan, moss, seafoam
+          if (r < 0.35) {
+            hue = 20 + random() * 25
+            saturation = 30 + random() * 30
+          } else if (r < 0.65) {
+            hue = 90 + random() * 40
+            saturation = 30 + random() * 30
+          } else {
+            hue = 140 + random() * 40
+            saturation = 25 + random() * 30
+          }
+          break
+
+        default:
+          hue = 200 + random() * 160
+          saturation = 70 + random() * 30
       }
 
       particlesRef.current.push({
@@ -80,8 +122,8 @@ export default function SparkleCanvas({
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed - (burst ? 0 : 0.6),
         life: 1,
-        maxLife: burst ? 0.016 + Math.random() * 0.012 : 0.018 + Math.random() * 0.014,
-        size: burst ? 3 + Math.random() * 5 : 2 + Math.random() * 3,
+        maxLife: burst ? 0.016 + random() * 0.012 : 0.018 + random() * 0.014,
+        size: burst ? 3 + random() * 5 : 2 + random() * 3,
         hue,
         saturation,
       })
@@ -107,14 +149,14 @@ export default function SparkleCanvas({
     window.addEventListener('resize', resize)
 
     const loop = (timestamp: number) => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      particlesRef.current = particlesRef.current.filter((p) => p.life > 0)
 
-        if (particlesRef.current.length === 0) {
-        setParticleCount(0)  // ← ADD THIS
+      if (particlesRef.current.length === 0) {
+        setParticleCount(0)
         animFrameRef.current = null
         return
-        }
+      }
 
       for (const p of particlesRef.current) {
         p.life -= p.maxLife
@@ -165,41 +207,33 @@ export default function SparkleCanvas({
     rafRef.current = requestAnimationFrame(rafSpawnLoop)
   }, [spawnInterval, spawnParticles])
 
-    const stopHold = useCallback(() => {
+  const stopHold = useCallback(() => {
     holdingRef.current = false
-    
-    // Stop spawning
+
     if (rafRef.current != null) {
-        cancelAnimationFrame(rafRef.current)
-        rafRef.current = null
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = null
     }
+  }, [])
 
-    // DON'T clear canvas
-    // DON'T pause animation loop
-    
-    // Just let existing particles fade out naturally
-    // The animation loop (with skip-empty optimization) keeps running
-    // and will filter dead particles until count hits 0
-    }, [])
-
-    const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
+  const startHold = useCallback((x: number, y: number, target?: HTMLElement) => {
     if (target?.closest('button, a, [data-interactive]')) {
-        return
+      return
     }
+
     cursorRef.current = { x, y }
     if (!holdingRef.current) {
-        holdingRef.current = true
-        lastSpawnRef.current = performance.now()
-        spawnParticles(x, y, false)
-        
-        // Resume animation loop if it was stopped
-        if (!animFrameRef.current && loopRef.current) {
+      holdingRef.current = true
+      lastSpawnRef.current = performance.now()
+      spawnParticles(x, y, false)
+
+      if (!animFrameRef.current && loopRef.current) {
         animFrameRef.current = requestAnimationFrame(loopRef.current)
-        }
-        
-        if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
+      }
+
+      if (rafRef.current == null) rafRef.current = requestAnimationFrame(rafSpawnLoop)
     }
-    }, [spawnParticles, rafSpawnLoop])
+  }, [spawnParticles, rafSpawnLoop])
 
   useEffect(() => {
     const onPointerDown = (e: PointerEvent) => {
@@ -231,15 +265,12 @@ export default function SparkleCanvas({
     }
   }, [startHold, stopHold])
 
-    return { 
-    canvasRef, 
-    particleCount, 
-    burst: (x: number, y: number) => {
-        spawnParticles(x, y, true)
-        // Resume animation loop if it was stopped
-        if (!animFrameRef.current && loopRef.current) {
-        animFrameRef.current = requestAnimationFrame(loopRef.current)
-        }
+  const burst = useCallback((x: number, y: number) => {
+    spawnParticles(x, y, true)
+    if (!animFrameRef.current && loopRef.current) {
+      animFrameRef.current = requestAnimationFrame(loopRef.current)
     }
-    }
+  }, [spawnParticles])
+
+  return { canvasRef, particleCount, burst }
 }
