@@ -8,3 +8,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 )
+
+// In src/main.tsx, add at the top:
+document.addEventListener('dragstart', (e) => {
+  if ((e.target as HTMLElement).tagName === 'SVG') {
+    e.preventDefault()
+  }
+})
