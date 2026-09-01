@@ -34,7 +34,7 @@ export default function Card({ title, subtitle, href, onClick, theme = 'wood' }:
         borderRadius: 9999,
       }}
     >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-90">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="opacity-90" draggable={false}>
         <path d="M8 1.5L9.8 6.2H14.5L10.8 9.1L12.3 14L8 11.1L3.7 14L5.2 9.1L1.5 6.2H6.2L8 1.5Z" fill="currentColor"/>
       </svg>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>

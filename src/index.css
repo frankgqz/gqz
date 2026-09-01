@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
-
 html, body {
   height: 100%;
   overflow: hidden;
@@ -10,4 +9,16 @@ html, body {
 
 button, a {
   touch-action: manipulation;
+}
+
+/* Prevent browser drag on SVGs */
+svg {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Let buttons still be clickable */
+button, a {
+  pointer-events: auto;
 }
