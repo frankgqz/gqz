@@ -13,7 +13,6 @@ interface Particle {
   saturation: number
 }
 
-
 type Theme = 'wood' | 'dark' | 'sky' | 'matcha'
 
 interface SparkleCanvasProps {
