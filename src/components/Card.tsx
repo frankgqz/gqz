@@ -10,7 +10,6 @@ interface CardProps {
   theme?: Theme
 }
 
-
 export default function Card({ title, subtitle, href, onClick, theme = 'wood' }: CardProps) {
   const [pressed, setPressed] = useState(false)
 
@@ -101,3 +100,4 @@ export default function Card({ title, subtitle, href, onClick, theme = 'wood' }:
     </button>
   )
 }
+
