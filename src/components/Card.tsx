@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { themes, Theme } from '../theme'
+import { themes, Theme } from '@gqz/theme'
 
 interface CardProps {
   title: string

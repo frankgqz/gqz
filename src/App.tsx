@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import Card from './components/Card'
 import ThemeToggle from './components/ThemeToggle'
 import SparkleCanvas from './components/SparkleCanvas'
-import { themes, themeOrder, Theme } from './theme'
+import { themes, themeOrder, Theme } from '@gqz/theme'
 
 export default function App() {
   const [currentTheme, setCurrentTheme] = useState<Theme>('wood')

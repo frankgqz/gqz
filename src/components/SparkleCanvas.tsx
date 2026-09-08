@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
-import { themes, Theme } from '../theme'
-
+import { themes, Theme } from '@gqz/theme'
+//                        ^^^^^^^^^^^^^^^
+// replace: '../theme' → '@gqz/theme'
 
 interface Particle {
   id: number

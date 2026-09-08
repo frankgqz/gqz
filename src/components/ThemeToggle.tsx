@@ -1,4 +1,4 @@
-import { Theme, themes } from '../theme'
+import { Theme, themes } from '@gqz/theme'
 
 interface ThemeToggleProps {
   currentTheme: Theme
