@@ -1,15 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import Card from './components/Card'
 import SparkleCanvas from './components/SparkleCanvas'
-import { ThemeToggle } from '@gqz/theme'
-import { themes, themeOrder, Theme } from '@gqz/theme'
+import { ThemeToggle, useTheme } from '@gqz/theme'
 
 export default function App() {
-  const [currentTheme, setCurrentTheme] = useState<Theme>('wood')
-  const theme = themes[currentTheme]
+  const { activeTheme, themeColors: theme } = useTheme()
 
   const { canvasRef, particleCount, burst } = SparkleCanvas({
-    theme: currentTheme
+    theme: activeTheme,
   })
 
   const handlePickleClick = useCallback(
@@ -24,15 +22,10 @@ export default function App() {
     [burst]
   )
 
-  const cycleTheme = () => {
-    const idx = themeOrder.indexOf(currentTheme)
-    setCurrentTheme(themeOrder[(idx + 1) % themeOrder.length])
-  }
-
   return (
-    <div 
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden" 
-      style={{ 
+    <div
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
+      style={{
         backgroundColor: theme.bg,
         paddingTop: 'env(safe-area-inset-top)',
         paddingRight: 'env(safe-area-inset-right)',
@@ -40,14 +33,14 @@ export default function App() {
         paddingLeft: 'env(safe-area-inset-left)',
       }}
     >
-      <div 
+      <div
         className="absolute z-30"
-        style={{ 
+        style={{
           top: 'max(24px, calc(env(safe-area-inset-top) + 24px))',
-          right: 'max(24px, calc(env(safe-area-inset-right) + 24px))'
+          right: 'max(24px, calc(env(safe-area-inset-right) + 24px))',
         }}
       >
-        <ThemeToggle currentTheme={currentTheme} onToggle={cycleTheme} />
+        <ThemeToggle />
       </div>
 
       <div
@@ -64,9 +57,9 @@ export default function App() {
 
       <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" style={{ zIndex: 10 }} />
 
-      <div 
+      <div
         className="relative flex flex-col items-center gap-6 px-6"
-        style={{ 
+        style={{
           zIndex: 20,
           position: 'absolute',
           top: '40%',
@@ -78,7 +71,7 @@ export default function App() {
           apps
         </p>
 
-        <Card title="Pickleball" onClick={handlePickleClick} theme={currentTheme} />
+        <Card title="Pickleball" onClick={handlePickleClick} theme={activeTheme} />
 
         <p className="text-xs tracking-wide select-none" style={{ color: theme.subtext }}>
           {particleCount} particles

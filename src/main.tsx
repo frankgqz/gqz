@@ -4,14 +4,14 @@ import App from './App'
 import './index.css'
 import { ThemeProvider } from '@gqz/theme'
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
 )
 
-// In src/main.tsx, add at the top:
 document.addEventListener('dragstart', (e) => {
   if ((e.target as HTMLElement).tagName === 'SVG') {
     e.preventDefault()
