@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react'
 import Card from './components/Card'
-import ThemeToggle from './components/ThemeToggle'
 import SparkleCanvas from './components/SparkleCanvas'
+import { ThemeToggle } from '@gqz/theme'
 import { themes, themeOrder, Theme } from '@gqz/theme'
 
 export default function App() {
