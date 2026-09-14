@@ -17,6 +17,11 @@
       "types": "./src/ThemeToggle.ts",
       "import": "./src/ThemeToggle.js",
       "require": "./src/ThemeToggle.js"
+    },
+    "./useTheme": {
+    "types": "./src/useTheme.tsx",
+    "import": "./src/useTheme.js",
+    "require": "./src/useTheme.js"
     }
   },
   "repository": "github:frankgqz/theme"
