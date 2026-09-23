@@ -13,6 +13,27 @@ export interface ThemeColors {
   buttonShadow: string
   buttonShadowPressed: string
   particleHues: { hue: [number, number]; sat: [number, number] }[]
+
+  // typography (new)
+  fontFamily: string
+  fontFamilyHeading: string
+  fontWeightBody: number
+  fontWeightHeading: number
+  fontSizeBase: string
+  fontSizeHeading: string
+  headingTracking: string
+  bodyTracking: string
+
+  // radius (new)
+  radiusButton: string
+  radiusCard: string
+  radiusInput: string
+  radiusPill: string
+
+  // shadows (new, separate from button shadows)
+  shadowCard: string
+  shadowModal: string
+  shadowDropdown: string
 }
 
 export const themes: Record<Theme, ThemeColors> = {
@@ -33,6 +54,21 @@ export const themes: Record<Theme, ThemeColors> = {
       { hue: [45, 70],  sat: [60, 90] },
       { hue: [80, 140], sat: [40, 80] },
     ],
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamilyHeading: "'Inter', system-ui, sans-serif",
+    fontWeightBody: 400,
+    fontWeightHeading: 600,
+    fontSizeBase: '16px',
+    fontSizeHeading: '1.5rem',
+    headingTracking: '0.02em',
+    bodyTracking: '0',
+    radiusButton: '0.625rem',
+    radiusCard: '1rem',
+    radiusInput: '0.5rem',
+    radiusPill: '9999px',
+    shadowCard: '0 4px 20px rgba(139,115,85,0.18), 0 1px 4px rgba(0,0,0,0.08)',
+    shadowModal: '0 16px 48px rgba(0,0,0,0.25)',
+    shadowDropdown: '0 8px 24px rgba(0,0,0,0.15)',
   },
   dark: {
     bg: '#0D0E14',
@@ -50,6 +86,21 @@ export const themes: Record<Theme, ThemeColors> = {
       { hue: [250, 290], sat: [70, 100] },
       { hue: [260, 300], sat: [70, 100] },
     ],
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamilyHeading: "'Inter', system-ui, sans-serif",
+    fontWeightBody: 400,
+    fontWeightHeading: 500,
+    fontSizeBase: '16px',
+    fontSizeHeading: '1.5rem',
+    headingTracking: '0.01em',
+    bodyTracking: '0',
+    radiusButton: '0.75rem',
+    radiusCard: '1.25rem',
+    radiusInput: '0.625rem',
+    radiusPill: '9999px',
+    shadowCard: '0 4px 24px rgba(99,102,241,0.18), 0 1px 4px rgba(0,0,0,0.30)',
+    shadowModal: '0 16px 64px rgba(0,0,0,0.50)',
+    shadowDropdown: '0 8px 32px rgba(0,0,0,0.35)',
   },
   sky: {
     bg: '#FFFFFF',
@@ -66,6 +117,21 @@ export const themes: Record<Theme, ThemeColors> = {
       { hue: [230, 270], sat: [15, 35] },
       { hue: [250, 280], sat: [20, 40] },
     ],
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamilyHeading: "'Inter', system-ui, sans-serif",
+    fontWeightBody: 400,
+    fontWeightHeading: 500,
+    fontSizeBase: '16px',
+    fontSizeHeading: '1.5rem',
+    headingTracking: '0',
+    bodyTracking: '0',
+    radiusButton: '0.5rem',
+    radiusCard: '0.875rem',
+    radiusInput: '0.375rem',
+    radiusPill: '9999px',
+    shadowCard: '0 2px 12px rgba(96,128,168,0.12), 0 1px 2px rgba(96,128,168,0.08)',
+    shadowModal: '0 12px 32px rgba(0,0,0,0.10)',
+    shadowDropdown: '0 6px 16px rgba(96,128,168,0.15)',
   },
   matcha: {
     bg: '#D9CFC4',
@@ -82,5 +148,20 @@ export const themes: Record<Theme, ThemeColors> = {
       { hue: [90, 130], sat: [20, 50] },
       { hue: [140, 180], sat: [15, 45] },
     ],
+    fontFamily: "'Inter', system-ui, sans-serif",
+    fontFamilyHeading: "'Inter', system-ui, sans-serif",
+    fontWeightBody: 400,
+    fontWeightHeading: 500,
+    fontSizeBase: '16px',
+    fontSizeHeading: '1.5rem',
+    headingTracking: '0.01em',
+    bodyTracking: '0',
+    radiusButton: '0.625rem',
+    radiusCard: '1rem',
+    radiusInput: '0.5rem',
+    radiusPill: '9999px',
+    shadowCard: '0 4px 16px rgba(90,107,85,0.15), 0 1px 3px rgba(0,0,0,0.10)',
+    shadowModal: '0 12px 36px rgba(0,0,0,0.20)',
+    shadowDropdown: '0 6px 20px rgba(0,0,0,0.12)',
   },
 }

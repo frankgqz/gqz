@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { useTheme } from './useTheme'
 import { Theme, themes, themeOrder } from './theme'
 
-
-
 const themeIcons: Record<Theme, string> = {
   wood: '🍂',
   dark: '🌙',

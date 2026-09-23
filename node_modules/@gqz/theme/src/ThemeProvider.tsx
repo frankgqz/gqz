@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, ReactNode } from 'react'
-import { ThemeContext, STORAGE_KEY } from './useTheme'
+import { ThemeContext, STORAGE_KEY, getStoredTheme, setStoredTheme } from './useTheme'
 import type { Theme } from './theme'
 import { themes } from './theme'
 
@@ -8,8 +8,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [activeTheme, setActiveThemeState] = useState<Theme>('wood')
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null
-    if (stored && ['wood', 'dark', 'sky', 'matcha'].includes(stored)) {
+    const stored = getStoredTheme()
+    if (stored) {
       setActiveThemeState(stored)
     }
   }, [])
@@ -26,12 +26,32 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--theme-btn-end', colors.buttonEnd)
     root.style.setProperty('--theme-btn-shadow', colors.buttonShadow)
     root.style.setProperty('--theme-btn-shadow-pressed', colors.buttonShadowPressed)
+
+    // typography (new)
+    root.style.setProperty('--theme-font-family', colors.fontFamily)
+    root.style.setProperty('--theme-font-family-heading', colors.fontFamilyHeading)
+    root.style.setProperty('--theme-font-weight-body', String(colors.fontWeightBody))
+    root.style.setProperty('--theme-font-weight-heading', String(colors.fontWeightHeading))
+    root.style.setProperty('--theme-font-size-base', colors.fontSizeBase)
+    root.style.setProperty('--theme-font-size-heading', colors.fontSizeHeading)
+    root.style.setProperty('--theme-heading-tracking', colors.headingTracking)
+    root.style.setProperty('--theme-body-tracking', colors.bodyTracking)
+    // radius (new)
+    root.style.setProperty('--theme-radius-button', colors.radiusButton)
+    root.style.setProperty('--theme-radius-card', colors.radiusCard)
+    root.style.setProperty('--theme-radius-input', colors.radiusInput)
+    root.style.setProperty('--theme-radius-pill', colors.radiusPill)
+    // shadows (new)
+    root.style.setProperty('--theme-shadow-card', colors.shadowCard)
+    root.style.setProperty('--theme-shadow-modal', colors.shadowModal)
+    root.style.setProperty('--theme-shadow-dropdown', colors.shadowDropdown)
+
     root.setAttribute('data-theme', activeTheme)
   }, [activeTheme])
 
   const setActiveTheme = (theme: Theme) => {
     setActiveThemeState(theme)
-    localStorage.setItem(STORAGE_KEY, theme)
+    setStoredTheme(theme)
   }
 
   return (
