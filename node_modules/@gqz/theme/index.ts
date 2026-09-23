@@ -1,5 +1,5 @@
-export { ThemeProvider } from './ThemeProvider'
+export { ThemeProvider } from './themeProvider'
 export { useTheme } from './useTheme'
-export { ThemeToggle } from './ThemeToggle'
+export { ThemeToggle } from './themeToggle'
 export { themes, themeOrder } from './theme'
 export type { Theme, ThemeColors } from './theme'

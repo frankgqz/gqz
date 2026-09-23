@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Particle Button</title>
+
+    <!-- Theme persistence: applies saved theme before CSS paints -->
+    <script>
+      (function() {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var parts = cookies[i].trim().split('=');
+          if (parts[0] !== 'gqz-theme') continue;
+          var theme = parts[1];
+          var themes = {
+            wood:    { bg: '#F5F0E8', text: '#5D4E3A', subtext: '#8B7355', accent: '#8B7355' },
+            dark:    { bg: '#0D0E14', text: '#4b5068', subtext: '#2d3148', accent: '#6366f1' },
+            sky:     { bg: '#FFFFFF', text: '#5D7090', subtext: '#8090A8', accent: '#8090B5' },
+            matcha:  { bg: '#D9CFC4', text: '#5D6855', subtext: '#7A8B75', accent: '#7A8B75' }
+          };
+          if (!themes[theme]) return;
+          var t = themes[theme];
+          var root = document.documentElement;
+          root.setAttribute('data-theme', theme);
+          root.style.setProperty('--theme-bg', t.bg);
+          root.style.setProperty('--theme-text', t.text);
+          root.style.setProperty('--theme-subtext', t.subtext);
+          root.style.setProperty('--theme-accent', t.accent);
+          return;
+        }
+      })();
+    </script>
+
+    
+    <meta property="og:title" content="Particle Button">
+    <script type="module" crossorigin src="/assets/index-DmouAs6X.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-B0a8VjTR.css">
+  </head>
+  <body>
+    
+    <div id="root"></div>
+    
+  </body>
+</html>

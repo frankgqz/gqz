@@ -1,11 +1,19 @@
 {
   "name": "@gqz/theme",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "main": "index.ts",
   "module": "index.ts",
   "types": "index.ts",
-  "files": ["index.ts", "theme.ts", "useTheme.ts", "storage.ts", "themeProvider.tsx", "theme.css"],
+  "files": [
+    "index.ts",
+    "storage.ts",
+    "theme.ts",
+    "themeProvider.tsx",
+    "useTheme.ts",
+    "themeToggle.tsx",
+    "theme.css"
+  ],
   "exports": {
     ".": {
       "types": "./index.ts",
