@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState, ReactNode } from 'react'
-import { ThemeContext, STORAGE_KEY, getStoredTheme, setStoredTheme } from './useTheme'
+import { ThemeContext } from './useTheme'
+import { getStoredTheme, setStoredTheme } from './storage'
 import type { Theme } from './theme'
 import { themes } from './theme'
 
@@ -9,14 +10,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = getStoredTheme()
-    if (stored) {
-      setActiveThemeState(stored)
-    }
+    if (stored) setActiveThemeState(stored)
   }, [])
 
   useEffect(() => {
     const colors = themes[activeTheme]
     const root = document.documentElement
+
+    // colors
     root.style.setProperty('--theme-bg', colors.bg)
     root.style.setProperty('--theme-text', colors.text)
     root.style.setProperty('--theme-subtext', colors.subtext)
@@ -27,7 +28,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--theme-btn-shadow', colors.buttonShadow)
     root.style.setProperty('--theme-btn-shadow-pressed', colors.buttonShadowPressed)
 
-    // typography (new)
+    // typography
     root.style.setProperty('--theme-font-family', colors.fontFamily)
     root.style.setProperty('--theme-font-family-heading', colors.fontFamilyHeading)
     root.style.setProperty('--theme-font-weight-body', String(colors.fontWeightBody))
@@ -36,12 +37,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.style.setProperty('--theme-font-size-heading', colors.fontSizeHeading)
     root.style.setProperty('--theme-heading-tracking', colors.headingTracking)
     root.style.setProperty('--theme-body-tracking', colors.bodyTracking)
-    // radius (new)
+
+    // radius
     root.style.setProperty('--theme-radius-button', colors.radiusButton)
     root.style.setProperty('--theme-radius-card', colors.radiusCard)
     root.style.setProperty('--theme-radius-input', colors.radiusInput)
     root.style.setProperty('--theme-radius-pill', colors.radiusPill)
-    // shadows (new)
+
+    // shadows
     root.style.setProperty('--theme-shadow-card', colors.shadowCard)
     root.style.setProperty('--theme-shadow-modal', colors.shadowModal)
     root.style.setProperty('--theme-shadow-dropdown', colors.shadowDropdown)
