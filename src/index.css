@@ -20,6 +20,10 @@
   --radius-3xl: var(--theme-radius-card);
 }
 
+button, input, select, textarea {
+  font-family: inherit;
+}
+
 body {
   background-color: var(--theme-bg);
   color: var(--theme-text);
@@ -31,7 +35,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--theme-font-family-heading, system-ui, sans-serif);
 }
 
-html, body {
+html, button, input, select, textarea {
+  font-family: inherit;
+}
+
+body {
   height: 100%;
   overflow: hidden;
   touch-action: none;

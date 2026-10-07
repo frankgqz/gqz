@@ -66,7 +66,7 @@ export default function App() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <p className="text-sm tracking-widest select-none font-mono text-text">
+        <p className="text-sm tracking-widest select-none text-text">
           apps
         </p>
 
