@@ -32,3 +32,9 @@ re-read at session start, patch never rewrite). History: `git log`.
   work fine cross-platform:
   `node node_modules/typescript/bin/tsc --noEmit -p tsconfig.json`
   (build is `npm run build` = vite; run on host or let Vercel do it).
+- Container build recipe (verified 2026-10-07): vite 8 = rolldown + tailwind
+  oxide + lightningcss all need linux natives. `npm pack <pkg>-linux-x64-gnu@<ver>`
+  OUTSIDE the repo, extract into node_modules (+ copy the .node next to
+  lightningcss/oxide index.js fallbacks) for: @rolldown/binding-*, lightningcss-*,
+  @tailwindcss/oxide-*. Remove them after the build to keep the tree
+  win32-pure.
