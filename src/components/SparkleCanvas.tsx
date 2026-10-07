@@ -25,7 +25,7 @@ interface SparkleCanvasProps {
 }
 
 export default function SparkleCanvas({
-  theme = 'dark',
+  theme = 'night',
   burstCount = 35,
   sprayCount = 8,
   spawnInterval = 20,
@@ -56,8 +56,8 @@ export default function SparkleCanvas({
 
       let hue: number, saturation: number
 
-						const colors = themes[theme].particleHues
-						const color = colors[Math.floor(Math.random() * colors.length)]
+						const colors = themes[theme].particleHues ?? []
+						const color = colors[Math.floor(Math.random() * colors.length)] ?? { hue: [0, 0], sat: [0, 0] }
 						hue = color.hue[0] + Math.random() * (color.hue[1] - color.hue[0])
 						saturation = color.sat[0] + Math.random() * (color.sat[1] - color.sat[0])
 

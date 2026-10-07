@@ -14,13 +14,15 @@
           var parts = cookies[i].trim().split('=');
           if (parts[0] !== 'gqz-theme') continue;
           var theme = parts[1];
-          var themes = {
-            wood:    { bg: '#F5F0E8', text: '#5D4E3A', subtext: '#8B7355', accent: '#8B7355' },
-            dark:    { bg: '#0D0E14', text: '#4b5068', subtext: '#2d3148', accent: '#6366f1' },
-            sky:     { bg: '#FFFFFF', text: '#5D7090', subtext: '#8090A8', accent: '#8090B5' },
-            matcha:  { bg: '#D9CFC4', text: '#5D6855', subtext: '#7A8B75', accent: '#7A8B75' }
-          };
-          if (!themes[theme]) return;
+        if (theme === 'dark') theme = 'night';
+        if (theme === 'sky') theme = 'bubble';
+        var themes = {
+          wood:   { bg: '#1a120b', text: '#f5e6d3', subtext: '#b8956a', accent: '#d4a574' },
+          night:  { bg: '#131316', text: '#f5f5f5', subtext: '#959AA3', accent: '#FF6A1F' },
+          bubble: { bg: '#EAF6FF', text: '#2E4A6B', subtext: '#7FA8D6', accent: '#FF8FC5' },
+          matcha: { bg: '#f0f4e8', text: '#2d3a1f', subtext: '#6b7a52', accent: '#7a9e3f' }
+        };
+        if (!themes[theme]) return;
           var t = themes[theme];
           var root = document.documentElement;
           root.setAttribute('data-theme', theme);
