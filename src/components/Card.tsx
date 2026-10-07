@@ -1,23 +1,18 @@
 import { useState } from 'react'
-import { themes, Theme } from '@gqz/theme'
 
 interface CardProps {
   title: string
   subtitle?: string
   href?: string
   onClick?: (e: React.MouseEvent) => void
-  theme?: Theme
 }
 
-export default function Card({ title, subtitle, href, onClick, theme = 'wood' }: CardProps) {
+export default function Card({ title, subtitle, href, onClick }: CardProps) {
   const [pressed, setPressed] = useState(false)
-  const t = themes[theme]
 
-  const bg = pressed
-    ? `linear-gradient(135deg, ${t.buttonStart} 0%, ${t.buttonEnd} 100%)`
-    : `linear-gradient(135deg, ${t.buttonStart} 0%, ${t.buttonEnd} 100%)`
+  const bg = 'linear-gradient(135deg, var(--theme-btn-start) 0%, var(--theme-btn-end) 100%)'
 
-  const shadow = pressed ? t.buttonShadowPressed : t.buttonShadow
+  const shadow = pressed ? 'var(--theme-btn-shadow-pressed)' : 'var(--theme-btn-shadow)'
 
   const inner = (
     <span

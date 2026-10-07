@@ -1,5 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap');
 @import 'tailwindcss';
+@import '@gqz/theme/theme.css';
+
+@theme inline {
+  --color-bg: var(--theme-bg);
+  --color-text: var(--theme-text);
+  --color-subtext: var(--theme-subtext);
+  --color-accent: var(--theme-accent);
+  --color-panel: var(--theme-panel);
+  --color-line: var(--theme-border);
+  --color-muted-bg: var(--theme-muted-bg);
+  --color-hover-bg: var(--theme-hover-bg);
+  --color-btn-start: var(--theme-btn-start);
+  --color-btn-end: var(--theme-btn-end);
+  --radius-sm: var(--theme-radius-input);
+  --radius-md: var(--theme-radius-input);
+  --radius-lg: var(--theme-radius-button);
+  --radius-xl: var(--theme-radius-button);
+  --radius-2xl: var(--theme-radius-card);
+  --radius-3xl: var(--theme-radius-card);
+}
+
+body {
+  background-color: var(--theme-bg);
+  color: var(--theme-text);
+  font-family: var(--theme-font-family, system-ui, sans-serif);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--theme-font-family-heading, system-ui, sans-serif);
+}
 
 html, body {
   height: 100%;

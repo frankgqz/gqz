@@ -24,9 +24,8 @@ export default function App() {
 
   return (
     <div
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-bg"
       style={{
-        backgroundColor: theme.bg,
         paddingTop: 'env(safe-area-inset-top)',
         paddingRight: 'env(safe-area-inset-right)',
         paddingBottom: 'env(safe-area-inset-bottom)',
@@ -67,13 +66,13 @@ export default function App() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <p className="text-sm tracking-widest select-none font-mono" style={{ color: theme.text }}>
+        <p className="text-sm tracking-widest select-none font-mono text-text">
           apps
         </p>
 
-        <Card title="Pickleball" onClick={handlePickleClick} theme={activeTheme} />
+        <Card title="Pickleball" onClick={handlePickleClick} />
 
-        <p className="text-xs tracking-wide select-none" style={{ color: theme.subtext }}>
+        <p className="text-xs tracking-wide select-none text-subtext">
           {particleCount} particles
         </p>
       </div>
