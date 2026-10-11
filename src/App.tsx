@@ -10,13 +10,13 @@ export default function App() {
     theme: activeTheme,
   })
 
-  const handlePickleClick = useCallback(
-    (e: React.MouseEvent) => {
+  const makeAppClick = useCallback(
+    (url: string) => (e: React.MouseEvent) => {
       e.preventDefault()
       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
       burst(rect.left + rect.width / 2, rect.top + rect.height / 2)
       setTimeout(() => {
-        window.location.href = 'https://pickleball.gqz.app'
+        window.location.href = url
       }, 160)
     },
     [burst]
@@ -70,7 +70,8 @@ export default function App() {
           apps
         </p>
 
-        <Card title="Pickleball" onClick={handlePickleClick} />
+        <Card title="Pickleball" onClick={makeAppClick('https://pickleball.gqz.app')} />
+        <Card title="Shrine" onClick={makeAppClick('https://shrine.gqz.app')} />
 
         <p className="text-xs tracking-wide select-none text-subtext">
           {particleCount} particles
