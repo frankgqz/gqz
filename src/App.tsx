@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import Card from './components/Card'
 import SparkleCanvas from './components/SparkleCanvas'
 import { ThemeToggle, useTheme } from '@gqz/theme'
@@ -10,16 +10,22 @@ export default function App() {
     theme: activeTheme,
   })
 
+  // every press bursts at its own point — two fingers, two bursts at once
+  // (pointer events fire per touch point, so multi-touch just works)
+  useEffect(() => {
+    const onPress = (e: PointerEvent) => burst(e.clientX, e.clientY)
+    window.addEventListener('pointerdown', onPress)
+    return () => window.removeEventListener('pointerdown', onPress)
+  }, [burst])
+
   const makeAppClick = useCallback(
     (url: string) => (e: React.MouseEvent) => {
       e.preventDefault()
-      const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-      burst(rect.left + rect.width / 2, rect.top + rect.height / 2)
       setTimeout(() => {
         window.location.href = url
       }, 160)
     },
-    [burst]
+    []
   )
 
   return (
