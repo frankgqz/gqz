@@ -1,5 +1,5 @@
 # AGENTS.md — gqz.app (personal hub)
-
+ 
 What's true here. Backlog: `roadmap.md` at root (Frank's async task queue —
 re-read at session start, patch never rewrite). History: `git log`.
 
