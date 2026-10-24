@@ -10,7 +10,7 @@ interface CardProps {
 export default function Card({ title, subtitle, href, onClick }: CardProps) {
   const [pressed, setPressed] = useState(false)
 
-  const bg = 'linear-gradient(180deg, color-mix(in srgb, var(--theme-btn-start) 85%, #fff) 0%, var(--theme-btn-start) 46%, var(--theme-btn-end) 100%)'
+  const bg = 'linear-gradient(180deg, color-mix(in srgb, var(--theme-btn-start) 88%, #fff) 0%, var(--theme-btn-start) 52%, color-mix(in srgb, var(--theme-btn-start) 72%, var(--theme-btn-end)) 100%)'
 
   // skeu stack (Ania's recipe): top light · bottom shade · contact · own-colour glow
   const shadow = pressed
