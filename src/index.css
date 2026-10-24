@@ -60,3 +60,10 @@ svg {
 button, a {
   pointer-events: auto;
 }
+
+/* --- skeu button (Ania's recipe, Frank 2026-10-22): bevel + contact + own-colour glow --- */
+:root, [data-theme='wood']   { --skeu-glow: #e8b06a9e; } /* amber — the maple */
+[data-theme='night']         { --skeu-glow: #ff6a1f9e; } /* Frank: orange, not the neon */
+[data-theme='bubble']        { --skeu-glow: #8b7cf8a6; } /* violet — the reel's cousin */
+[data-theme='onsen'],
+[data-theme='matcha']        { --skeu-glow: #6f8464a6; } /* moss */

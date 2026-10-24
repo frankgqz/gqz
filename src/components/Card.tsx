@@ -10,9 +10,12 @@ interface CardProps {
 export default function Card({ title, subtitle, href, onClick }: CardProps) {
   const [pressed, setPressed] = useState(false)
 
-  const bg = 'linear-gradient(135deg, var(--theme-btn-start) 0%, var(--theme-btn-end) 100%)'
+  const bg = 'linear-gradient(180deg, color-mix(in srgb, var(--theme-btn-start) 85%, #fff) 0%, var(--theme-btn-start) 46%, var(--theme-btn-end) 100%)'
 
-  const shadow = pressed ? 'var(--theme-btn-shadow-pressed)' : 'var(--theme-btn-shadow)'
+  // skeu stack (Ania's recipe): top light · bottom shade · contact · own-colour glow
+  const shadow = pressed
+    ? 'inset 0 1px 0 #ffffff30, inset 0 -1px 0 #0002, 0 0 2px #0005, 0 3px 10px -6px var(--skeu-glow)'
+    : 'inset 0 1px 0 #ffffff59, inset 0 -2px 0 #0003, 0 1px 2px #0006, 0 8px 24px -6px var(--skeu-glow)'
 
   const inner = (
     <span
@@ -21,7 +24,7 @@ export default function Card({ title, subtitle, href, onClick }: CardProps) {
         background: bg,
         color: '#fff',
         boxShadow: shadow,
-        transform: pressed ? 'scale(0.96)' : 'scale(1)',
+        transform: pressed ? 'translateY(2px) scale(0.98)' : 'scale(1)',
         transition: 'transform .12s ease, box-shadow .12s ease, background .12s ease',
         display: 'inline-flex',
         alignItems: 'center',
