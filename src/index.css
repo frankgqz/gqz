@@ -62,5 +62,4 @@ button, a {
 }
 
 /* --- skeu button (Ania's recipe, Frank 2026-10-22): bevel + contact + own-colour glow --- */
-:root { --skeu-glow: color-mix(in srgb, var(--theme-sparkle) 75%, transparent); } /* the glow IS the sparkle family (Frank) - derived, no hexes left to drift */
 [data-theme='onsen'],
