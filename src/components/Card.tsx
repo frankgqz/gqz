@@ -50,7 +50,7 @@ export default function Card({ title, subtitle, href, onClick }: CardProps) {
         onMouseDown={() => setPressed(true)}
         onMouseUp={() => setPressed(false)}
         onMouseLeave={() => setPressed(false)}
-        style={{ textDecoration: 'none', display: 'inline-block' }}
+        style={{ textDecoration: 'none', display: 'inline-block', borderRadius: 9999, appearance: 'none', background: 'transparent' }}
         aria-label={title}
       >
         {inner}
@@ -64,7 +64,7 @@ export default function Card({ title, subtitle, href, onClick }: CardProps) {
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
-      style={{ border: 0, background: 'transparent', padding: 0, cursor: 'pointer' }}
+      style={{ border: 0, background: 'transparent', padding: 0, cursor: 'pointer', borderRadius: 9999, appearance: 'none' }}
       aria-label={title}
     >
       {inner}
