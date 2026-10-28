@@ -62,8 +62,5 @@ button, a {
 }
 
 /* --- skeu button (Ania's recipe, Frank 2026-10-22): bevel + contact + own-colour glow --- */
-:root, [data-theme='wood']   { --skeu-glow: #e8b06a9e; } /* amber — the maple */
-[data-theme='night']         { --skeu-glow: #ff6a1f9e; } /* Frank: orange, not the neon */
-[data-theme='bubble']        { --skeu-glow: #FF7A9E99; } /* pink glow (Frank: the violet read dark) */ /* violet — the reel's cousin */
+:root { --skeu-glow: color-mix(in srgb, var(--theme-sparkle) 62%, transparent); } /* the glow IS the sparkle family (Frank) - derived, no hexes left to drift */
 [data-theme='onsen'],
-[data-theme='matcha']        { --skeu-glow: #6f8464a6; } /* moss */
